@@ -357,7 +357,6 @@ def fully_connected(inputs,
       outputs = activation_fn(outputs)
     return outputs
 
-
 def reduce_sum2d_conv(inputs,
                axis = None,
                scope = None,
