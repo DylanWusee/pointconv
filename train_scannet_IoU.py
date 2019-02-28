@@ -33,6 +33,7 @@ parser.add_argument('--decay_rate', type=float, default=0.7, help='Decay rate fo
 FLAGS = parser.parse_args()
 
 EPOCH_CNT = 0
+EPOCH_CNT_WHOLE = 0
 
 BATCH_SIZE = FLAGS.batch_size
 NUM_POINT = FLAGS.num_point
@@ -337,7 +338,7 @@ def eval_one_epoch(sess, ops, test_writer):
 # evaluate on whole scenes, for each block, only sample 8192 points
 def eval_whole_scene_one_epoch(sess, ops, test_writer):
     """ ops: dict mapping from string to tf ops """
-    global EPOCH_CNT
+    global EPOCH_CNT_WHOLE
     is_training = False
     num_batches = len(TEST_DATASET_WHOLE_SCENE)
 
@@ -349,7 +350,7 @@ def eval_whole_scene_one_epoch(sess, ops, test_writer):
     total_iou_deno_class = [0 for _ in range(NUM_CLASSES)]
     
     log_string(str(datetime.now()))
-    log_string('---- EPOCH %03d EVALUATION WHOLE SCENE----'%(EPOCH_CNT))
+    log_string('---- EPOCH %03d EVALUATION WHOLE SCENE----'%(EPOCH_CNT_WHOLE))
 
     labelweights = np.zeros(21)
     is_continue_batch = False
@@ -419,7 +420,7 @@ def eval_whole_scene_one_epoch(sess, ops, test_writer):
         iou_per_class_str += 'class %d, acc: %f \n' % (l,total_correct_class[l]/float(total_iou_deno_class[l]))
     log_string(iou_per_class_str)
 
-    EPOCH_CNT += 1
+    EPOCH_CNT_WHOLE += 1
     return mIoU
 
 

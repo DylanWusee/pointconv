@@ -24,7 +24,7 @@ def weight_net_hidden(xyz, hidden_units, scope, is_training, bn_decay=None, weig
                                 bn = True, is_training = is_training, activation_fn=activation_fn,
                                 scope = 'wconv%d'%(i), bn_decay=bn_decay, weight_decay = weight_decay)
 
-            net = tf_util.dropout(net, keep_prob=0.5, is_training=is_training, scope='wconv_dp%d'%(i))
+            #net = tf_util.dropout(net, keep_prob=0.5, is_training=is_training, scope='wconv_dp%d'%(i))
     return net
 
 def nonlinear_transform(data_in, mlp, scope, is_training, bn_decay=None, weight_decay = None, activation_fn = tf.nn.relu):
@@ -32,13 +32,20 @@ def nonlinear_transform(data_in, mlp, scope, is_training, bn_decay=None, weight_
     with tf.variable_scope(scope) as sc:
 
         net = data_in
-        for i, out_ch in enumerate(mlp):
-            net = tf_util.conv2d(net, out_ch, [1, 1],
-                                padding = 'VALID', stride=[1, 1],
-                                bn = True, is_training = is_training, activation_fn=tf.nn.relu,
-                                scope = 'nonlinear%d'%(i), bn_decay=bn_decay, weight_decay = weight_decay)
+        l = len(mlp)
+        if l > 1:
+            for i, out_ch in enumerate(mlp[0:(l-1)]):
+                net = tf_util.conv2d(net, out_ch, [1, 1],
+                                    padding = 'VALID', stride=[1, 1],
+                                    bn = True, is_training = is_training, activation_fn=tf.nn.relu,
+                                    scope = 'nonlinear%d'%(i), bn_decay=bn_decay, weight_decay = weight_decay)
 
-            net = tf_util.dropout(net, keep_prob=0.5, is_training=is_training, scope='dp_nonlinear%d'%(i))
+                #net = tf_util.dropout(net, keep_prob=0.5, is_training=is_training, scope='dp_nonlinear%d'%(i))
+        net = tf_util.conv2d(net, mlp[-1], [1, 1],
+                            padding = 'VALID', stride=[1, 1],
+                            bn = False, is_training = is_training,
+                            scope = 'nonlinear%d'%(l-1), bn_decay=bn_decay,
+                            activation_fn=tf.nn.sigmoid, weight_decay = weight_decay)
 
     return net
 
