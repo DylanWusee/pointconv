@@ -29,8 +29,9 @@ def knn_kdtree(nsample, xyz, new_xyz):
 
     return indices
 
-def kernel_density_estimation_ball(pts, sigma, N_points = 128, radius = float('+Inf'), is_norm = False):
+def kernel_density_estimation_ball(pts, sigma, N_points = 128, is_norm = False):
     with tf.variable_scope("ComputeDensity") as sc:
+        radius = 2 * sigma
         idx, pts_cnt = tf_grouping.query_ball_point(radius, N_points, pts, pts)
         g_pts = tf_grouping.group_point(pts, idx)
         g_pts -= tf.tile(tf.expand_dims(pts, 2), [1, 1, N_points, 1])
@@ -61,13 +62,14 @@ def kernel_density_estimation_ball(pts, sigma, N_points = 128, radius = float('+
 
         return density
 
-def kernel_density_estimation(pts, sigma, kpoint = 128, is_norm = False):
+def kernel_density_estimation(pts, sigma, kpoint = 32, is_norm = False):
     with tf.variable_scope("ComputeDensity") as sc:
         batch_size = pts.get_shape()[0]
         num_points = pts.get_shape()[1]
         if num_points < kpoint:
             kpoint = num_points.value - 1
-        point_indices = tf.py_func(knn_kdtree, [kpoint, pts, pts], tf.int32)
+        with tf.device('/cpu:0'):
+            point_indices = tf.py_func(knn_kdtree, [kpoint, pts, pts], tf.int32)
         batch_indices = tf.tile(tf.reshape(tf.range(batch_size), (-1, 1, 1, 1)), (1, num_points, kpoint, 1))
         idx = tf.concat([batch_indices, tf.expand_dims(point_indices, axis = 3)], axis = 3)
         idx.set_shape([batch_size, num_points, kpoint, 2])
@@ -135,22 +137,30 @@ def grouping(feature, K, src_xyz, q_xyz, use_xyz = True):
 
 if __name__=='__main__':
     #test KDE
-
-    pts = np.random.randn(1, 8192, 3).astype('float32')
+    import time
+    batch_size = 8
+    num_point = 8192
+    pts = np.random.randn(batch_size, num_point, 3).astype('float32')
 
     import pdb
     pdb.set_trace()
 
     with tf.device('/gpu:1'):
-        points = tf.constant(pts)
-        density = kernel_density_estimation(points, 1.0)
-
+        points = tf.placeholder(tf.float32, shape=(batch_size, num_point, 3))
+        density = kernel_density_estimation_ball(points, 1.0)
+        #density = kernel_density_estimation(points, 1.0)
+    init = tf.global_variables_initializer()
     with tf.Session('') as sess:
-        den = sess.run(density)
+                
+        sess.run(init)
+        t1 = time.time()
+        den = sess.run(density, feed_dict = {points:pts})
 
-    import scipy.io as sio 
+    print(time.time() - t1)
 
-    sio.savemat('density.mat', dict([('pts', pts), ('density', den)]))
+    #import scipy.io as sio 
+
+    #sio.savemat('density.mat', dict([('pts', pts), ('density', den)]))
 
 
 

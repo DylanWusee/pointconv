@@ -76,11 +76,13 @@ def feature_encoding_layer(xyz, feature, npoint, sigma, K, mlp, is_training, bn_
 
         grouped_xyz, grouped_feature, idx = pointconv_util.grouping(feature, K, xyz, new_xyz)
 
-        density = pointconv_util.kernel_density_estimation(xyz, sigma)
-        inverse_density = tf.div(1.0, density)
-        grouped_density = tf.gather_nd(inverse_density, idx) # (batch_size, npoint, nsample, 1)
-        inverse_max_density = tf.reduce_max(grouped_density, axis = 2, keepdims = True)
-        density_scale = tf.div(grouped_density, inverse_max_density)
+        density = pointconv_util.kernel_density_estimation_ball(xyz, sigma)
+        #inverse_density = tf.div(1.0, density)
+        #grouped_density = tf.gather_nd(inverse_density, idx) # (batch_size, npoint, nsample, 1)
+        #inverse_max_density = tf.reduce_max(grouped_density, axis = 2, keepdims = True)
+        #density_scale = tf.div(grouped_density, inverse_max_density)
+
+        density_scale = tf.gather_nd(density, idx)
 
         for i, num_out_channel in enumerate(mlp):
             if i != len(mlp) - 1:
@@ -129,11 +131,13 @@ def feature_decoding_layer(xyz1, xyz2, points1, points2, sigma, K, mlp, is_train
         #setup for deConv
         grouped_xyz, grouped_feature, idx = pointconv_util.grouping(interpolated_points, K, xyz1, xyz1, use_xyz=use_xyz)
 
-        density = pointconv_util.kernel_density_estimation(xyz1, sigma)
-        inverse_density = tf.div(1.0, density)
-        grouped_density = tf.gather_nd(inverse_density, idx) # (batch_size, npoint, nsample, 1)
-        inverse_max_density = tf.reduce_max(grouped_density, axis = 2, keepdims = True)
-        density_scale = tf.div(grouped_density, inverse_max_density)
+        density = pointconv_util.kernel_density_estimation_ball(xyz1, sigma)
+        #inverse_density = tf.div(1.0, density)
+        #grouped_density = tf.gather_nd(inverse_density, idx) # (batch_size, npoint, nsample, 1)
+        #inverse_max_density = tf.reduce_max(grouped_density, axis = 2, keepdims = True)
+        #density_scale = tf.div(grouped_density, inverse_max_density)
+
+        density_scale = tf.gather_nd(density, idx)
 
         weight = weight_net_hidden(grouped_xyz, [32], scope = 'decode_weight_net', is_training=is_training, bn_decay = bn_decay, weight_decay = weight_decay)
 

@@ -107,7 +107,6 @@ def train():
         with tf.device('/gpu:'+str(GPU_INDEX)):
             pointclouds_pl, labels_pl, smpws_pl = MODEL.placeholder_inputs(BATCH_SIZE, NUM_POINT)
             is_training_pl = tf.placeholder(tf.bool, shape=())
-            bandwidth_pl = tf.placeholder(tf.float32, shape=())
             print is_training_pl
             
             # Note the global_step=batch parameter to minimize. 
@@ -118,7 +117,7 @@ def train():
 
             print "--- Get model and loss"
             # Get model and loss 
-            pred, end_points = MODEL.get_model(pointclouds_pl, is_training_pl, NUM_CLASSES, bandwidth_pl, bn_decay=bn_decay)
+            pred, end_points = MODEL.get_model(pointclouds_pl, is_training_pl, NUM_CLASSES, BANDWIDTH, bn_decay=bn_decay)
             loss = MODEL.get_loss(pred, labels_pl, smpws_pl)
             tf.summary.scalar('loss', loss)
 
@@ -160,7 +159,6 @@ def train():
         ops = {'pointclouds_pl': pointclouds_pl,
                'labels_pl': labels_pl,
                'smpws_pl': smpws_pl,
-               'bandwidth_pl': bandwidth_pl,
                'is_training_pl': is_training_pl,
                'pred': pred,
                'loss': loss,
@@ -245,12 +243,8 @@ def train_one_epoch(sess, ops, train_writer):
         aug_data = provider.rotate_point_cloud_z(batch_data)
         #aug_data = provider.rotate_point_cloud(batch_data)
 
-        #bandwidth = 0.5 * mean_dist
-        bandwidth = BANDWIDTH
-
         feed_dict = {ops['pointclouds_pl']: aug_data,
                     ops['labels_pl']: batch_label,
-                    ops['bandwidth_pl']: bandwidth,
                     ops['smpws_pl']:batch_smpw,
                     ops['is_training_pl']: is_training,}
         summary, step, _, loss_val, pred_val = sess.run([ops['merged'], ops['step'],
@@ -306,7 +300,6 @@ def eval_one_epoch(sess, ops, test_writer):
         feed_dict = {ops['pointclouds_pl']: aug_data,
                     ops['labels_pl']: batch_label,
                     ops['smpws_pl']: batch_smpw,
-                    ops['bandwidth_pl']: bandwidth,
                     ops['is_training_pl']: is_training}
         summary, step, loss_val, pred_val = sess.run([ops['merged'], ops['step'],
             ops['loss'], ops['pred']], feed_dict=feed_dict)
@@ -391,7 +384,6 @@ def eval_whole_scene_one_epoch(sess, ops, test_writer):
         feed_dict = {ops['pointclouds_pl']: aug_data,
                     ops['labels_pl']: batch_label,
                     ops['smpws_pl']: batch_smpw,
-                    ops['bandwidth_pl']: bandwidth,
                     ops['is_training_pl']: is_training}
         summary, step, loss_val, pred_val = sess.run([ops['merged'], ops['step'],
             ops['loss'], ops['pred']], feed_dict=feed_dict)
