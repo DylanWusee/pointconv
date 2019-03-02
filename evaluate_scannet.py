@@ -143,7 +143,6 @@ def eval_one_epoch(sess, ops, num_votes=1, topk=1):
                 batch_data[0:real_batch_size,...] = scene_data[start_idx:end_idx, ...]
                 batch_label[0:real_batch_size,...] = scene_label[start_idx:end_idx, ...]
                 batch_point_index[0:real_batch_size,...] = scene_point_index[start_idx:end_idx, ...]
-                bandwidth = BANDWIDTH
 
                 if WITH_RGB:
                     batch_data[:, :, 3:6] /= 1.0 #255.0
