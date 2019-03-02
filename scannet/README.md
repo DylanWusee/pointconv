@@ -1,4 +1,4 @@
-##ScanNet v2 Data
+## ScanNet v2 Data
 
 Please download original dataset from weibsite: <a href="http://www.scan-net.org/">http://www.scan-net.org/</a>
 
