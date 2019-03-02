@@ -1,3 +1,10 @@
+"""
+ScanNet v2 data preprocessing.
+Extract point clouds data from .ply files to genrate .pickle files for training and testing.
+Author: Wenxuan Wu
+Date: July 2018
+"""
+
 import os
 import sys
 import numpy as np 
@@ -24,11 +31,11 @@ def gen_label_map():
     print(label_map)
     return label_map
 
-def gen_pickle(split = "val"):
+def gen_pickle(split = "val", root = "DataSet/Scannet_v2"):
     if split == 'test':
-        root = "/media/wenxuan/Large/DataSet/Scannet_v2/scans_test"
+        root = root + "/scans_test"
     else:
-        root = "/media/wenxuan/Large/DataSet/Scannet_v2/scans"
+        root = root + "/scans"
     file_list = "scannetv2_%s.txt"%(split)
     with open(file_list) as fl:
         scene_id = fl.read().splitlines()
@@ -71,11 +78,11 @@ def gen_pickle(split = "val"):
     pickle_out.close()
 
 if __name__ =='__main__':
-    import pdb
-    pdb.set_trace()
-    gen_pickle(split = 'train')
-    gen_pickle(split = 'val')
-    gen_pickle(split = 'test')
+
+    root = "/media/wenxuan/Large/DataSet/Scannet_v2" #modify this path to your Scannet v2 dataset Path
+    gen_pickle(split = 'train', root = root)
+    gen_pickle(split = 'val', root = root)
+    gen_pickle(split = 'test', root = root)
 
     print('Done!!!')
 

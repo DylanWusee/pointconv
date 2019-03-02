@@ -1,3 +1,9 @@
+""" ScanNet Class From Charles R. Qi, Hao Su.
+Modiyied to support rgb in ScanNet v2.
+Author: Wenxuan Wu
+Date: July 2018
+"""
+
 import pickle
 import os
 import sys

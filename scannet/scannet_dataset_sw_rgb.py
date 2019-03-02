@@ -1,3 +1,10 @@
+""" ScanNet Class From Charles R. Qi, Hao Su.
+Modiyied to support point-wise evaluation in ScanNet v2.
+Author: Wenxuan Wu
+Date: July 2018
+"""
+
+
 import pickle
 import os
 import sys
