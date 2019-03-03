@@ -51,7 +51,7 @@ def nonlinear_transform(data_in, mlp, scope, is_training, bn_decay=None, weight_
 
 def feature_encoding_layer(xyz, feature, npoint, sigma, K, mlp, is_training, bn_decay, weight_decay, scope, bn=True, use_xyz=True):
     ''' Input:
-            Sample Method: Random
+            Sample Method: Farthest Point Sampling
             xyz: (batch_size, ndataset, 3) TF tensor
             points: (batch_size, ndataset, channel) TF tensor
             npoint: int32 -- #points sampled in farthest point sampling
@@ -110,7 +110,7 @@ def feature_encoding_layer(xyz, feature, npoint, sigma, K, mlp, is_training, bn_
 
         return new_xyz, new_points
 
-def feature_decoding_layer(xyz1, xyz2, points1, points2, sigma, K, mlp, is_training, bn_decay, weight_decay, scope, bn=True, use_xyz = False):
+def feature_decoding_layer(xyz1, xyz2, points1, points2, sigma, K, mlp, is_training, bn_decay, weight_decay, scope, bn=True, use_xyz = True):
     ''' Input:                                                                                                      
             xyz1: (batch_size, ndataset1, 3) TF tensor                                                              
             xyz2: (batch_size, ndataset2, 3) TF tensor, sparser than xyz1                                           
