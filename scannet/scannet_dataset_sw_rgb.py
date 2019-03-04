@@ -9,7 +9,6 @@ import pickle
 import os
 import sys
 import numpy as np
-import pc_util
 
 class ScannetDatasetWholeScene_evaluation():
     #prepare to give prediction on each points
@@ -160,10 +159,6 @@ if __name__=='__main__':
     for ii in range(len(d)):
         print(ii)
         ps,seg,smpw, idxs = d[ii]
-        for b in range(ps.shape[0]):
-            _, uvlabel, _ = pc_util.point_cloud_label_to_surface_voxel_label_fast(ps[b,smpw[b,:]>0,:], seg[b,smpw[b,:]>0], res=0.02)
-            tmp,_ = np.histogram(uvlabel,range(22))
-            labelweights_vox += tmp
     print(labelweights_vox[1:].astype(np.float32)/np.sum(labelweights_vox[1:].astype(np.float32)))
     exit()
 
