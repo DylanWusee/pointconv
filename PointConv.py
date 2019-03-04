@@ -51,21 +51,16 @@ def nonlinear_transform(data_in, mlp, scope, is_training, bn_decay=None, weight_
 
 def feature_encoding_layer(xyz, feature, npoint, sigma, K, mlp, is_training, bn_decay, weight_decay, scope, bn=True, use_xyz=True):
     ''' Input:
-            Sample Method: Farthest Point Sampling
             xyz: (batch_size, ndataset, 3) TF tensor
-            points: (batch_size, ndataset, channel) TF tensor
+            feature: (batch_size, ndataset, channel) TF tensor
             npoint: int32 -- #points sampled in farthest point sampling
-            radius: float32 -- search radius in local region
-            nsample: int32 -- how many points in each local region
+            sigma: float32 -- KDE bandwidth
+            K: int32 -- how many points in each local region
             mlp: list of int32 -- output size for MLP on each point
-            mlp2: list of int32 -- output size for MLP on each region
-            group_all: bool -- group all points into one PC if set true, OVERRIDE
-                npoint, radius and nsample settings
             use_xyz: bool, if True concat XYZ with local point features, otherwise just use point features
         Return:
             new_xyz: (batch_size, npoint, 3) TF tensor
             new_points: (batch_size, npoint, mlp[-1] or mlp2[-1]) TF tensor
-            idx: (batch_size, npoint, nsample) int32 -- indices for local regions
     '''
     with tf.variable_scope(scope) as sc:
         num_points = xyz.get_shape()[1]
@@ -116,6 +111,8 @@ def feature_decoding_layer(xyz1, xyz2, points1, points2, sigma, K, mlp, is_train
             xyz2: (batch_size, ndataset2, 3) TF tensor, sparser than xyz1                                           
             points1: (batch_size, ndataset1, nchannel1) TF tensor                                                   
             points2: (batch_size, ndataset2, nchannel2) TF tensor
+            sigma: float32 -- KDE bandwidth
+            K: int32 -- how many points in each local region
             mlp: list of int32 -- output size for MLP on each point                                                 
         Return:
             new_points: (batch_size, ndataset1, mlp[-1]) TF tensor
@@ -158,6 +155,7 @@ def feature_decoding_layer(xyz1, xyz2, points1, points2, sigma, K, mlp, is_train
             new_points1 = tf.concat(axis=-1, values=[new_points, tf.expand_dims(points1, axis = 2)]) # B,ndataset1,nchannel1+nchannel2
         else:
             new_points1 = new_points
+
         for i, num_out_channel in enumerate(mlp):
             if i != 0:
                 new_points1 = tf_util.conv2d(new_points1, num_out_channel, [1,1],
