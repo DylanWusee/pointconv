@@ -144,11 +144,11 @@ if __name__=='__main__':
     pdb.set_trace()
     d = ScannetDatasetWholeScene(root = './', split='val', block_points=8192)
     labelweights_vox = np.zeros(21)
-    for ii in xrange(len(d)):
+    for ii in range(len(d)):
         print(ii)
         #ps,seg,smpw = d[ii]
         ps,seg,smpw = d[ii]
-        for b in xrange(ps.shape[0]):
+        for b in range(ps.shape[0]):
             _, uvlabel, _ = pc_util.point_cloud_label_to_surface_voxel_label_fast(ps[b,smpw[b,:]>0,:], seg[b,smpw[b,:]>0], res=0.02)
             tmp,_ = np.histogram(uvlabel,range(22))
             labelweights_vox += tmp
