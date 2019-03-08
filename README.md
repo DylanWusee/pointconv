@@ -1,6 +1,6 @@
 # PointConv
 **PointConv: Deep Convolutional Networks on 3D Point Clouds.** CVPR 2019  
-Wenxuan Wu, Zhongang Qi, Fuxin Li.
+Wenxuan Wu, Zhongang Qi, Li Fuxin.
 
 ## Introduction
 This project is based on our CVPR2019 paper. You can find the [arXiv](https://arxiv.org/abs/1811.07246) version here.
