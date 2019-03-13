@@ -28,7 +28,7 @@ Download the ScanNetv2 dataset from [here](http://www.scan-net.org/), and see `s
 To train a model to segment Scannet Scenes:
 
 ```
-CUDA_VISIBLE_DEVICES=0 python train_scannet.py --model pointconv_weight_density_n8 --log_dir pointconv_scannet_ --batch_size 8
+CUDA_VISIBLE_DEVICES=0 python train_scannet_IoU.py --model pointconv_weight_density_n16 --log_dir pointconv_scannet_ --batch_size 8
 ```
 
 After training, to evaluate the segmentation IoU accuracies:
