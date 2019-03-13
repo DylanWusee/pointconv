@@ -1,3 +1,8 @@
+"""
+Helper Function for PointConv
+Author: Wenxuan Wu
+Date: July 2018
+"""
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function

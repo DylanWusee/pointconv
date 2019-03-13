@@ -1,3 +1,8 @@
+"""
+Modified from PointNet++: https://github.com/charlesq34/pointnet2
+Author: Wenxuan Wu
+Date: July 2018
+"""
 import argparse
 import math
 import h5py
@@ -45,7 +50,7 @@ OPTIMIZER = FLAGS.optimizer
 DECAY_STEP = FLAGS.decay_step
 DECAY_RATE = FLAGS.decay_rate
 
-BANDWIDTH = 0.2
+BANDWIDTH = 0.05
 
 MODEL = importlib.import_module(FLAGS.model) # import network module
 MODEL_FILE = os.path.join(BASE_DIR, 'models', FLAGS.model+'.py')
