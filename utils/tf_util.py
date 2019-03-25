@@ -360,6 +360,7 @@ def fully_connected(inputs,
 def reduce_sum2d_conv(inputs,
                axis = None,
                scope = None,
+               keepdims=False,
                activation_fn=tf.nn.relu,
                data_format='NHWC',
                bn=False,
@@ -369,7 +370,7 @@ def reduce_sum2d_conv(inputs,
     num_output_channels = inputs.get_shape()[-1]
     outputs = tf.reduce_sum(inputs,
                             axis = axis,
-                            keepdims = True,
+                            keepdims = keepdims,
                             name=sc.name)
 
     biases = _variable_on_cpu('biases', [num_output_channels],

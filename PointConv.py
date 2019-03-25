@@ -53,7 +53,6 @@ def weight_net(xyz, hidden_units, scope, is_training, bn_decay=None, weight_deca
             #net = tf_util.dropout(net, keep_prob=0.5, is_training=is_training, scope='wconv_dp%d'%(i))
     return net
 
-
 def nonlinear_transform(data_in, mlp, scope, is_training, bn_decay=None, weight_decay = None, activation_fn = tf.nn.relu):
 
     with tf.variable_scope(scope) as sc:
@@ -100,8 +99,8 @@ def feature_encoding_layer(xyz, feature, npoint, radius, sigma, K, mlp, is_train
 
         density = pointconv_util.kernel_density_estimation_ball(xyz, radius, sigma)
         inverse_density = tf.div(1.0, density)
-        #grouped_density = tf.gather_nd(inverse_density, idx) # (batch_size, npoint, nsample, 1)
-        grouped_density = tf_grouping.group_point(inverse_density, idx)
+        grouped_density = tf.gather_nd(inverse_density, idx) # (batch_size, npoint, nsample, 1)
+        #grouped_density = tf_grouping.group_point(inverse_density, idx)
         inverse_max_density = tf.reduce_max(grouped_density, axis = 2, keepdims = True)
         density_scale = tf.div(grouped_density, inverse_max_density)
 
@@ -158,8 +157,8 @@ def feature_decoding_layer(xyz1, xyz2, points1, points2, radius, sigma, K, mlp, 
 
         density = pointconv_util.kernel_density_estimation_ball(xyz1, radius, sigma)
         inverse_density = tf.div(1.0, density)
-        #grouped_density = tf.gather_nd(inverse_density, idx) # (batch_size, npoint, nsample, 1)
-        grouped_density = tf_grouping.group_point(inverse_density, idx)
+        grouped_density = tf.gather_nd(inverse_density, idx) # (batch_size, npoint, nsample, 1)
+        #grouped_density = tf_grouping.group_point(inverse_density, idx)
         inverse_max_density = tf.reduce_max(grouped_density, axis = 2, keepdims = True)
         density_scale = tf.div(grouped_density, inverse_max_density)
 
@@ -216,12 +215,12 @@ def feature_decoding_layer_depthwise(xyz1, xyz2, points1, points2, radius, sigma
         interpolated_points = three_interpolate(points2, idx, weight)
 
         #setup for deConv
-        grouped_xyz, grouped_feature, idx = pointconv_util.grouping_ball(interpolated_points, K, xyz1, xyz1, radius, use_xyz=use_xyz)
+        grouped_xyz, grouped_feature, idx = pointconv_util.grouping(interpolated_points, K, xyz1, xyz1, use_xyz=use_xyz)
 
         density = pointconv_util.kernel_density_estimation_ball(xyz1, radius, sigma)
         inverse_density = tf.div(1.0, density)
-        #grouped_density = tf.gather_nd(inverse_density, idx) # (batch_size, npoint, nsample, 1)
-        grouped_density = tf_grouping.group_point(inverse_density, idx)
+        grouped_density = tf.gather_nd(inverse_density, idx) # (batch_size, npoint, nsample, 1)
+        #grouped_density = tf_grouping.group_point(inverse_density, idx)
         inverse_max_density = tf.reduce_max(grouped_density, axis = 2, keepdims = True)
         density_scale = tf.div(grouped_density, inverse_max_density)
 

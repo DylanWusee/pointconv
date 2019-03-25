@@ -136,9 +136,6 @@ def grouping(feature, K, src_xyz, q_xyz, use_xyz = True):
     
     return grouped_xyz, new_points, idx
 
-
-
-
 if __name__=='__main__':
     #test KDE
     import time
