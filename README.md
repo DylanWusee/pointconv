@@ -34,7 +34,7 @@ CUDA_VISIBLE_DEVICES=0 python train_scannet_IoU.py --model pointconv_weight_dens
 After training, to evaluate the segmentation IoU accuracies:
 
 ```
-CUDA_VISIBLE_DEVICES=0 python evaluate_scannet.py --model pointconv_weight_density_n8 --batch_size 8 --model_path pointconv_scannet_%s --ply_path DataSet/ScanNetv2/scans
+CUDA_VISIBLE_DEVICES=0 python evaluate_scannet.py --model pointconv_weight_density_n16 --batch_size 8 --model_path pointconv_scannet_%s --ply_path DataSet/ScanNetv2/scans
 ```
 
 Modify the model_path to your .ckpt file path and the ply_path to the ScanNetv2 ply file.
