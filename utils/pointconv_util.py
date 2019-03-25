@@ -34,9 +34,8 @@ def knn_kdtree(nsample, xyz, new_xyz):
 
     return indices
 
-def kernel_density_estimation_ball(pts, sigma, N_points = 128, is_norm = False):
+def kernel_density_estimation_ball(pts, radius, sigma, N_points = 128, is_norm = False):
     with tf.variable_scope("ComputeDensity") as sc:
-        radius = 2 * sigma
         idx, pts_cnt = tf_grouping.query_ball_point(radius, N_points, pts, pts)
         g_pts = tf_grouping.group_point(pts, idx)
         g_pts -= tf.tile(tf.expand_dims(pts, 2), [1, 1, N_points, 1])
