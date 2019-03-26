@@ -113,7 +113,7 @@ def feature_encoding_layer(xyz, feature, npoint, radius, sigma, K, mlp, is_train
                                             bn=bn, is_training=is_training,
                                             scope='conv%d'%(i), bn_decay=bn_decay, weight_decay = weight_decay) 
 
-        weight = weight_net_hidden(grouped_xyz, [8, 8], scope = 'weight_net', is_training=is_training, bn_decay = bn_decay, weight_decay = weight_decay)
+        weight = weight_net_hidden(grouped_xyz, [32], scope = 'weight_net', is_training=is_training, bn_decay = bn_decay, weight_decay = weight_decay)
 
         density_scale = nonlinear_transform(density_scale, [16, 1], scope = 'density_net', is_training=is_training, bn_decay = bn_decay, weight_decay = weight_decay)
 
@@ -164,7 +164,7 @@ def feature_decoding_layer(xyz1, xyz2, points1, points2, radius, sigma, K, mlp, 
 
         #density_scale = tf_grouping.group_point(density, idx)
 
-        weight = weight_net_hidden(grouped_xyz, [8, 8], scope = 'decode_weight_net', is_training=is_training, bn_decay = bn_decay, weight_decay = weight_decay)
+        weight = weight_net_hidden(grouped_xyz, [32], scope = 'decode_weight_net', is_training=is_training, bn_decay = bn_decay, weight_decay = weight_decay)
 
         density_scale = nonlinear_transform(density_scale, [16, 1], scope = 'decode_density_net', is_training=is_training, bn_decay = bn_decay, weight_decay = weight_decay)
 
@@ -226,7 +226,7 @@ def feature_decoding_layer_depthwise(xyz1, xyz2, points1, points2, radius, sigma
 
         #density_scale = tf_grouping.group_point(density, idx)
 
-        weight = weight_net(grouped_xyz, [16, grouped_feature.get_shape()[3].value], scope = 'decode_weight_net', is_training=is_training, bn_decay = bn_decay, weight_decay = weight_decay)
+        weight = weight_net(grouped_xyz, [32, grouped_feature.get_shape()[3].value], scope = 'decode_weight_net', is_training=is_training, bn_decay = bn_decay, weight_decay = weight_decay)
 
         density_scale = nonlinear_transform(density_scale, [16, 1], scope = 'decode_density_net', is_training=is_training, bn_decay = bn_decay, weight_decay = weight_decay)
 
