@@ -21,6 +21,9 @@ The code is based on [PointNet](https://github.com/charlesq34/pointnet)， and [
 The code has been tested with Python 2.7, TensorFlow 1.11.0, CUDA 9.0 and cuDNN 7.3 on Ubuntu 16.04.
 
 ## Usage
+### ModelNet40 Classification
+Please check [pointconv_pytorch](https://github.com/DylanWusee/pointconv_pytorch) for details on Classification task on ModelNet40 using pytorch.
+
 ### ScanetNet DataSet Segmentation
 
 Download the ScanNetv2 dataset from [here](http://www.scan-net.org/), and see `scannet/README` for details of preprocessing.
